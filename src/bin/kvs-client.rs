@@ -1,6 +1,7 @@
 extern crate kvs;
 
 use clap::{App, Arg};
+use kvs::KvsClient;
 use std::{env, error::Error, net::SocketAddr, str::FromStr};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -36,6 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if let Some(addr) = args.value_of("addr") {
         let socket = SocketAddr::from_str(addr)?;
+        let mut connection = KvsClient::new(&socket)?;
         match args.subcommand() {
             Some(("get", args)) => {
                 if let Some(key) = args.value_of("key") {
@@ -55,6 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 if let Some(key) = args.value_of("key") {
                     if let Some(value) = args.value_of("value") {
                         println!("{}, {}, {}", key, value, addr);
+                        connection.exec_set(key.to_owned(), value.to_owned())?;
                         return Ok(());
                         // command = Some(kvs::Command::Set((key.to_owned(), value.to_owned())));
                     }
