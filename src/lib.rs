@@ -1,6 +1,8 @@
-mod client;
-mod engine;
-mod error;
+pub mod client;
+pub mod engine;
+pub mod error;
+pub mod common;
+include!(concat!(env!("OUT_DIR"), "/command/mod.rs"));
 
 pub use client::KvsClient;
 pub use client::KvsServer;

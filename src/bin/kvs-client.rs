@@ -1,12 +1,9 @@
+extern crate kvs;
+
 use clap::{App, Arg};
-use std::env;
-use std::net::IpAddr;
+use std::{env, error::Error, net::SocketAddr, str::FromStr};
 
-fn main() -> kvs::Result<()> {
-    // let dir = env::current_dir()?;
-    // let mut kvs = kvs::KvStore::open(&dir)?;
-    // IpAddr::
-
+fn main() -> Result<(), Box<dyn Error>> {
     let args = App::new(env!("CARGO_PKG_NAME"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about("a kv store for learning")
@@ -29,7 +26,7 @@ fn main() -> kvs::Result<()> {
         )
         .arg(
             Arg::new("addr")
-            .about("server host and port")
+            .about("server host and port, such as, v4: 127.0.0.1:4000, v6: [2001:db8::1]:8080")
                 .long("addr")
                 .short('a')
                 .required(false)
@@ -38,6 +35,7 @@ fn main() -> kvs::Result<()> {
         .get_matches();
 
     if let Some(addr) = args.value_of("addr") {
+        let socket = SocketAddr::from_str(addr)?;
         match args.subcommand() {
             Some(("get", args)) => {
                 if let Some(key) = args.value_of("key") {

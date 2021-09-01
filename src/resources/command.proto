@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package protocol;
+
+message Command {
+    Type type = 1;
+    bytes action = 2;
+}
+
+enum Type {
+    set = 0;
+    get = 1;
+    remove = 2;
+    response = 3;
+}
+
+message Set {
+    string key = 1;
+    string value = 2;
+}
+
+message Get {
+    string key = 1;
+}
+
+message Remove {
+    string key = 1;
+}
+
+message Response {
+    string body = 1;
+}
