@@ -38,19 +38,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     if let Some(addr) = args.value_of("addr") {
         let socket = SocketAddr::from_str(addr)?;
         let mut connection = KvsClient::new(&socket)?;
+        
         match args.subcommand() {
             Some(("get", args)) => {
                 if let Some(key) = args.value_of("key") {
                     println!("{}, {}", key, addr);
-                    return Ok(());
-                    // command = Some(kvs::Command::Get(key.to_owned()));
+                    connection.exec_get(key.to_owned())?;
                 }
             }
             Some(("rm", args)) => {
                 if let Some(key) = args.value_of("key") {
                     println!("{}, {}", key, addr);
-                    return Ok(());
-                    // command = Some(kvs::Command::Rm(key.to_owned()));
+                    connection.exec_remove(key.to_owned())?;
                 }
             }
             Some(("set", args)) => {
@@ -58,8 +57,6 @@ fn main() -> Result<(), Box<dyn Error>> {
                     if let Some(value) = args.value_of("value") {
                         println!("{}, {}, {}", key, value, addr);
                         connection.exec_set(key.to_owned(), value.to_owned())?;
-                        return Ok(());
-                        // command = Some(kvs::Command::Set((key.to_owned(), value.to_owned())));
                     }
                 }
             }
